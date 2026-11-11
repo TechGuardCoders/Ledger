@@ -32,10 +32,28 @@ led.rollup(by="day")      # {'2026-10-14': 460}
 led.export("costs.csv")
 ```
 
+## Rust port
+
+`src/lib.rs` is a dependency-free Rust port of the same ledger (Python stays as the reference). Same line format, same semantics:
+
+```rust
+use ledger::{Ledger, By};
+
+let led = Ledger::new(Some(std::path::Path::new("ledger.jsonl")))?;
+led.record("tenant-a", "glm-5.3-flash", "spark-head", 120, 340, None)?;
+led.rollup(By::Tenant)?;   // {"tenant-a": 460}
+led.export(std::path::Path::new("costs.csv"))?;
+```
+
+- No external crates — std only (`Mutex` for thread-safety, hand-rolled UTC timestamp).
+- Same JSONL line format as the Python version, so files are interchangeable.
+- `cargo test` runs the same 10 scenarios as the Python suite.
+
 ## Results
 
-- 10 tests, all passing (rollups, export, reload, thread-safety, input validation).
-- Pure Python stdlib + pytest. No network in CI.
+- Python: 10 tests, all passing (rollups, export, reload, thread-safety, input validation).
+- Rust: 10 tests, all passing (`cargo test`) — same scenarios ported 1:1.
+- Pure Python stdlib + pytest; Rust std only. No network in CI.
 
 ## Scope
 

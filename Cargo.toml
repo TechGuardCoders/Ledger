@@ -1,0 +1,11 @@
+[package]
+name = "ledger"
+version = "0.1.0"
+edition = "2021"
+description = "Per-request cost accounting for inference calls (Rust port of ledger.py)"
+
+[lib]
+name = "ledger"
+path = "src/lib.rs"
+
+[dependencies]
